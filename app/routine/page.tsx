@@ -13,7 +13,30 @@ async function getLatestRoutine() {
 }
 
 export default async function MyRoutinePage() {
-    const routine = await getLatestRoutine();
+    let routine = null;
+    let error = null;
+
+    try {
+        routine = await getLatestRoutine();
+    } catch (e) {
+        console.error("Failed to fetch routine:", e);
+        error = "Failed to load your routine. Please check your connection.";
+    }
+
+    if (error) {
+        return (
+            <div className="container mx-auto px-4 py-20 text-center">
+                <h1 className="text-3xl font-bold mb-4 text-red-500">Connection Error</h1>
+                <p className="text-zinc-500 mb-8 max-w-lg mx-auto">
+                    We couldn't connect to the database. If you are the site owner, please check your `MONGODB_URI` environment variable and ensure your database allows connections from Vercel (IP whitelist 0.0.0.0/0).
+                </p>
+                <p className="text-xs text-zinc-400 font-mono bg-zinc-100 dark:bg-zinc-900 p-2 rounded inline-block">
+                    {/* Detailed error suppressed for security/cleanliness in UI, check console */}
+                    Check console logs for details.
+                </p>
+            </div>
+        )
+    }
 
     if (!routine) {
         return (
